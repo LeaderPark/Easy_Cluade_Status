@@ -7,6 +7,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <Nullable>disable</Nullable>
     <AssemblyName>ECS</AssemblyName>
+    <Version>1.0.1</Version>
     <RootNamespace>ECS</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <!-- One small widget: workstation GC keeps the heap tight. -->
@@ -15,5 +16,13 @@
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
     <!-- Nothing here needs symbols shipped alongside a 200 KB launcher. -->
     <DebugType>none</DebugType>
+    <!--
+      The standalone build packs the runtime into one file. WPF's native halves
+      (wpfgfx, PresentationNative, the VC runtime) have to sit on disk as real files
+      before the first window message arrives, or subclassing the window throws
+      DllNotFoundException and the process dies a few seconds after launch.
+      Ignored by the framework-dependent build, which has no natives to unpack.
+    -->
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
   </PropertyGroup>
 </Project>

@@ -96,7 +96,7 @@ internal sealed class MainWindow : Window {
             DragMove();
         };
         MouseLeftButtonUp += (_, e) => {
-            if (_dragged || IsControl(e.OriginalSource as DependencyObject)) return;
+            if (_dragged || IsControl(e.OriginalSource)) return;
             _ = Reload(true);
         };
 
@@ -136,10 +136,25 @@ internal sealed class MainWindow : Window {
         return bar;
     }
 
-    /// <summary>Anything tagged as a control handles its own click; the panel must not also refresh.</summary>
-    private static bool IsControl(DependencyObject node) {
-        for (; node != null; node = VisualTreeHelper.GetParent(node))
+    /// <summary>
+    /// Anything tagged as a control handles its own click; the panel must not also refresh.
+    ///
+    /// The click source is often a Run — the account name and the countdowns are built from
+    /// inlines — and a Run is a content element, not a Visual. Asking VisualTreeHelper for
+    /// its parent throws, which used to take the whole app down mid-click.
+    /// </summary>
+    private static bool IsControl(object source) {
+        var node = source as DependencyObject;
+        while (node != null) {
             if (node is FrameworkElement { Tag: "control" }) return true;
+            if (node is FrameworkContentElement { Tag: "control" }) return true;
+
+            node = node switch {
+                Visual or System.Windows.Media.Media3D.Visual3D => VisualTreeHelper.GetParent(node),
+                FrameworkContentElement content => content.Parent,
+                _ => LogicalTreeHelper.GetParent(node),
+            };
+        }
         return false;
     }
 
@@ -315,7 +330,15 @@ internal sealed class MainWindow : Window {
 
     // ---- rendering ----------------------------------------------------------------
 
-    private void Repaint() { foreach (var t in _tickers) t(); }
+    /// <summary>
+    /// Redraw the live countdowns. Iterates a copy: a refresh adds tickers from its own
+    /// continuations, so the list can grow while this is running.
+    /// </summary>
+    private void Repaint() {
+        foreach (var t in _tickers.ToArray()) {
+            try { t(); } catch { /* one bad row must not stop the rest */ }
+        }
+    }
 
     private async Task Reload(bool force) {
         if (force && _busy) return;

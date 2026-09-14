@@ -1,4 +1,4 @@
-# Install (or update) Claude Idler for the current user.
+# Install (or update) ECS for the current user.
 #
 #   .\install.ps1                 install, and start it now
 #   .\install.ps1 -Standalone     use the build that carries its own .NET runtime
