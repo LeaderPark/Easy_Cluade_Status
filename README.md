@@ -119,4 +119,4 @@ claude3 --resume        # 인자는 그대로 전달됩니다
 
 ## 라이선스
 
-MIT
+[MIT](LICENSE)
