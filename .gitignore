@@ -1,0 +1,11 @@
+# Build output. obj/ in particular records the absolute path of whoever built it.
+bin/
+obj/
+dist/
+dist-standalone/
+release/
+
+# Local editor and tooling state
+.vs/
+*.user
+*.suo

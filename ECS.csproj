@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <!-- Only for NotifyIcon: WPF has no tray support of its own. -->
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>disable</Nullable>
+    <AssemblyName>ECS</AssemblyName>
+    <RootNamespace>ECS</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <!-- One small widget: workstation GC keeps the heap tight. -->
+    <ServerGarbageCollection>false</ServerGarbageCollection>
+    <ConcurrentGarbageCollection>false</ConcurrentGarbageCollection>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <!-- Nothing here needs symbols shipped alongside a 200 KB launcher. -->
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+</Project>
